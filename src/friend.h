@@ -1,6 +1,6 @@
 typedef struct friend_meta_data {
     size_t alias_length;
-    uint8_t data[];
+    uint8_t *data;
 } FRIEND_META_DATA;
 
 typedef struct friend {
@@ -27,7 +27,7 @@ typedef struct friend {
 
 typedef struct {
     uint16_t length;
-    uint8_t id[TOX_FRIEND_ADDRESS_SIZE], msg[0];
+    uint8_t id[TOX_FRIEND_ADDRESS_SIZE], *msg;
 } FRIENDREQ;
 
 

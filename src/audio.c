@@ -210,8 +210,7 @@ void utox_audio_thread(void *args){
             return;
 
         /*Generate an electronic ringer sound that quickly alternates between two frequencies*/
-        int index = 0;
-        for(index = 0; index < buf_size; ++index) {
+        for(size_t index = 0; index < buf_size; ++index) {
             if ((index / (sample_rate)) % 4 < 2 ) {//4 second ring cycle, first 2 secondsring, the rest(2 seconds) is silence
                 if((index / 1000) % 2 == 1) {
                     samples[index] = 5000 * sin((2.0 * 3.1415926 * frequency1) / sample_rate * index); //5000=amplitude(volume level). It can be from zero to 32700

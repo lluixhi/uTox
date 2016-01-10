@@ -69,9 +69,8 @@
 
 #define isdesktop(x) ((size_t)(x) == 1)
 
-/* UTOX_SCALE is used as the default so that we have a lot of options for scale size.
- * When ever you see UTOX_SCALE(x) double the size, and use SCALE instead!           */
-#define UTOX_SCALE(x) (((int)( ((float)ui_scale * 2 / 10.0) * (float)(x) )) ? : 1 )
+/* utox_scale is used as the default so that we have a lot of options for scale size.
+ * When ever you see utox_scale(x) double the size, and use SCALE instead!           */
 #define      SCALE(x) (((int)( ((float)ui_scale / 10.0) * (float)(x) )) ? : 1 )
 
 /* House keeping for uTox save file. */
@@ -95,14 +94,14 @@ typedef struct {
     uint8_t  push_to_talk : 1;
     uint8_t  zero : 7;
     uint16_t unused[31];
-    uint8_t  proxy_ip[0];
+    uint8_t  *proxy_ip;
 } UTOX_SAVE;
 
 // Structs
 
 typedef struct {
     // Castless wrapper for lodepng data arguments.
-    unsigned char png_data[0];
+    unsigned char *png_data;
 } *UTOX_PNG_IMAGE;
 
 typedef struct edit_change EDIT_CHANGE;

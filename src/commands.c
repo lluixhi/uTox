@@ -13,7 +13,7 @@ STRING_IDX utox_run_command(char_t *string, STRING_IDX string_length, char_t **c
                    * or elsewhere, you MUST implement error checking better than what exists */
     }
 
-    STRING_IDX cmd_length, argument_length;
+    STRING_IDX cmd_length = 0, argument_length;
 
     if (string[0] == '/') { /* Cool it's a command we support! */
         // debug("command found!\n");

@@ -218,7 +218,7 @@ static int _drawtext(int x, int xmax, int y, char_t *str, STRING_IDX length)
 
         g = font_getglyph(sfont, ch);
         if(g) {
-            if(x + g->xadvance + UTOX_SCALE(5) > xmax && length) {
+            if(x + g->xadvance + utox_scale(5) > xmax && length) {
                 return -x;
             }
 
@@ -451,7 +451,7 @@ void draw_tray_icon(void){
     uint8_t *icon_data = (uint8_t*)&_binary_icons_utox_128x128_png_start;
     size_t  icon_size  = (size_t)&_binary_icons_utox_128x128_png_size;
 
-    UTOX_NATIVE_IMAGE *icon = png_to_image(icon_data, icon_size, &width, &height, 1);
+    UTOX_NATIVE_IMAGE *icon = png_to_image((UTOX_PNG_IMAGE)icon_data, icon_size, &width, &height, 1);
     if(UTOX_NATIVE_IMAGE_IS_VALID(icon)) {
         /* Get tray window size */
         int32_t x_r, y_r;
@@ -530,10 +530,10 @@ void tray_window_event(XEvent event) {
     switch(event.type){
     case ConfigureNotify: {
         XConfigureEvent *ev = &event.xconfigure;
-        if(tray_width != ev->width || tray_height != ev->height) {
+        if(tray_width != (uint32_t) ev->width || tray_height != (uint32_t) ev->height) {
             debug("Tray resized w:%i h:%i\n", ev->width, ev->height);
 
-            if(ev->width > tray_width || ev->height > tray_height) {
+            if((uint32_t) ev->width > tray_width || (uint32_t) ev->height > tray_height) {
                 tray_width = ev->width;
                 tray_height = ev->height;
 
@@ -573,7 +573,7 @@ void copy(int value)
 {
     int len;
     if(edit_active()) {
-        len = edit_copy(clipboard.data, sizeof(clipboard.data));
+        len = edit_copy((char_t *)clipboard.data, sizeof(clipboard.data));
     } else if(selected_item->item == ITEM_FRIEND) {
         len = messages_selection(&messages_friend, clipboard.data, sizeof(clipboard.data), value);
     } else {
@@ -625,7 +625,8 @@ void paste(void)
 void pastebestformat(const Atom atoms[], int len, Atom selection) {
     XSetErrorHandler(hold_x11s_hand);
     const Atom supported[] = {XA_PNG_IMG, XA_URI_LIST, XA_UTF8_STRING};
-    int i, j;
+    int i;
+    uint32_t j;
     for (i = 0; i < len; i++) {
         char *name = XGetAtomName(display, atoms[i]);
         if (name) {
@@ -884,12 +885,12 @@ void setscale(void)
     // TODO, fork this to a function
     xsh = XAllocSizeHints();
     xsh->flags = PMinSize;
-    xsh->min_width = UTOX_SCALE(320 );
-    xsh->min_height = UTOX_SCALE(160 );
+    xsh->min_width = utox_scale(320 );
+    xsh->min_height = utox_scale(160 );
 
     XSetWMNormalHints(display, window, xsh);
 
-    if(utox_window_width > UTOX_SCALE(320 ) && utox_window_height > UTOX_SCALE(160 ))
+    if(utox_window_width > utox_scale(320 ) && utox_window_height > utox_scale(160 ))
     {
         /* wont get a resize event, call this manually */
         ui_size(utox_window_width, utox_window_height);

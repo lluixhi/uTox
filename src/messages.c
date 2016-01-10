@@ -57,7 +57,7 @@ void messages_draw(MESSAGES *m, int x, int y, int width, int height) {
     // Message iterator
     void **p = m->data->data;
     MSG_IDX i, n = m->data->n;
-    y += 0;//UTOX_SCALE(2 );
+    y += 0;//utox_scale(2 );
 
     // Go through messages
     for(i = 0; i != n; i++) {
@@ -75,7 +75,7 @@ void messages_draw(MESSAGES *m, int x, int y, int width, int height) {
         }
 
         //! NOTE: should not be constant 100
-        if(y >= height + UTOX_SCALE(50 )) {
+        if(y >= height + utox_scale(50 )) {
             break;
         }
 
@@ -191,7 +191,7 @@ void messages_draw(MESSAGES *m, int x, int y, int width, int height) {
         // Draw file transfer
         case MSG_TYPE_FILE: {
             MSG_FILE *file = (void*)msg;
-            int room_for_clip = BM_FT_CAP_WIDTH + UTOX_SCALE(1);
+            int room_for_clip = BM_FT_CAP_WIDTH + utox_scale(1);
             int dx      = x + MESSAGES_X + room_for_clip;
             int d_width = width - MESSAGES_X - TIME_WIDTH - room_for_clip;
             /* Mouse Positions */
@@ -210,8 +210,8 @@ void messages_draw(MESSAGES *m, int x, int y, int width, int height) {
             int tbtn_bg_y = y;
             int tbtn_bg_h = BM_FTB_HEIGHT;
             /* Top button info */
-            int btnx   = dx + d_width - (btn_bg_w * 2) - UTOX_SCALE(1);
-            int tbtn_y = y + UTOX_SCALE(4);
+            int btnx   = dx + d_width - (btn_bg_w * 2) - utox_scale(1);
+            int tbtn_y = y + utox_scale(4);
             int btnw   = BM_FB_WIDTH;
             int btnh   = BM_FB_HEIGHT;
 
@@ -241,7 +241,7 @@ void messages_draw(MESSAGES *m, int x, int y, int width, int height) {
             }
 
             uint8_t    text_ttc[32];
-            STRING_IDX text_ttc_len = snprintf((char*)text_ttc, sizeof(text_ttc), "%llus", file_ttc);
+            STRING_IDX text_ttc_len = snprintf((char*)text_ttc, sizeof(text_ttc), "%" PRIu64, file_ttc);
             if (text_ttc_len >= sizeof(text_ttc)) {
                 text_ttc_len = sizeof(text_ttc) - 1;
             }
@@ -256,15 +256,15 @@ void messages_draw(MESSAGES *m, int x, int y, int width, int height) {
             #define draw_ft_rect(color) draw_rect_fill (dx, y, d_width, FILE_TRANSFER_BOX_HEIGHT, color)
             #define draw_ft_prog(color) draw_rect_fill (dx, y, prog_bar, FILE_TRANSFER_BOX_HEIGHT, color)
             #define draw_ft_cap(bg, fg) do { drawalpha(BM_FT_CAP, dx - room_for_clip, y, BM_FT_CAP_WIDTH, BM_FTB_HEIGHT, bg); \
-                                             drawalpha(BM_FILE, dx - room_for_clip + UTOX_SCALE(2), y + UTOX_SCALE(2 ), BM_FILE_WIDTH, BM_FILE_HEIGHT, fg); } while (0)
+                                             drawalpha(BM_FILE, dx - room_for_clip + utox_scale(2), y + utox_scale(2 ), BM_FILE_WIDTH, BM_FILE_HEIGHT, fg); } while (0)
 
-            // #define draw_ft_prog(color) draw_rect_frame(dx + UTOX_SCALE(5 ), y + UTOX_SCALE(17 ), prog_box, UTOX_SCALE(7 ), color);
-            //                            draw_rect_fill (dx + UTOX_SCALE(5 ), y + UTOX_SCALE(17 ), prog_bar, UTOX_SCALE(7 ), color)
+            // #define draw_ft_prog(color) draw_rect_frame(dx + utox_scale(5 ), y + utox_scale(17 ), prog_box, utox_scale(7 ), color);
+            //                            draw_rect_fill (dx + utox_scale(5 ), y + utox_scale(17 ), prog_bar, utox_scale(7 ), color)
 
-            int wbound = dx + d_width - UTOX_SCALE(3 );
+            int wbound = dx + d_width - utox_scale(3 );
 
-            #define draw_ft_text_right(str, len) do { wbound -= (textwidth(str, len) + (UTOX_SCALE(6 ))); drawtext(wbound, y + UTOX_SCALE(4 ), str, len); } while (0)
-            #define draw_ft_alph_right(bm, col) do { wbound -= btnw + (UTOX_SCALE(6 )); drawalpha(bm, wbound, tbtn_y, btnw, btnh, col); } while (0)
+            #define draw_ft_text_right(str, len) do { wbound -= (textwidth(str, len) + (utox_scale(6 ))); drawtext(wbound, y + utox_scale(4 ), str, len); } while (0)
+            #define draw_ft_alph_right(bm, col) do { wbound -= btnw + (utox_scale(6 )); drawalpha(bm, wbound, tbtn_y, btnw, btnh, col); } while (0)
             #define drawstr_ft_right(t) draw_ft_text_right(S(t), SLEN(t))
 
             switch (file->status) {
@@ -273,7 +273,7 @@ void messages_draw(MESSAGES *m, int x, int y, int width, int height) {
                 case FILE_TRANSFER_STATUS_PAUSED_US:
                 case FILE_TRANSFER_STATUS_PAUSED_BOTH:
                 case FILE_TRANSFER_STATUS_PAUSED_THEM: {
-                    int ftb_allowance = (BM_FTB_WIDTH * 2) + (UTOX_SCALE(2));
+                    int ftb_allowance = (BM_FTB_WIDTH * 2) + (utox_scale(2));
                     d_width -= ftb_allowance;
                     wbound -= ftb_allowance;
                     break;
@@ -335,7 +335,7 @@ void messages_draw(MESSAGES *m, int x, int y, int width, int height) {
                           (mouse_bbtn ? COLOR_BUTTON_SUCCESS_HOVER_BACKGROUND : COLOR_BUTTON_SUCCESS_BACKGROUND));
                 drawalpha(BM_NO, btnx + ((btn_bg_w - btnw) / 2), tbtn_y, btnw, btnh,
                           (mouse_bbtn ? COLOR_BUTTON_SUCCESS_HOVER_TEXT : COLOR_BUTTON_SUCCESS_TEXT));
-                btnx += btn_bg_w + UTOX_SCALE(1);
+                btnx += btn_bg_w + utox_scale(1);
 
                 drawalpha(BM_FTB2, btnx, tbtn_bg_y, btn_bg_w, tbtn_bg_h,
                           (mouse_tbtn ? COLOR_BUTTON_SUCCESS_HOVER_BACKGROUND : COLOR_BUTTON_SUCCESS_BACKGROUND));
@@ -354,7 +354,7 @@ void messages_draw(MESSAGES *m, int x, int y, int width, int height) {
                           (mouse_bbtn ? COLOR_BUTTON_SUCCESS_HOVER_BACKGROUND : COLOR_BUTTON_SUCCESS_BACKGROUND));
                 drawalpha(BM_NO, btnx + ((btn_bg_w - btnw) / 2), tbtn_y, btnw, btnh,
                           (mouse_bbtn ? COLOR_BUTTON_DANGER_HOVER_TEXT : COLOR_BUTTON_DANGER_TEXT));
-                btnx += btn_bg_w + UTOX_SCALE(1);
+                btnx += btn_bg_w + utox_scale(1);
 
                 drawalpha(BM_FTB2, btnx, tbtn_bg_y, btn_bg_w, tbtn_bg_h,
                           (mouse_tbtn ? COLOR_BUTTON_SUCCESS_HOVER_BACKGROUND : COLOR_BUTTON_SUCCESS_BACKGROUND));
@@ -378,7 +378,7 @@ void messages_draw(MESSAGES *m, int x, int y, int width, int height) {
                           (mouse_bbtn ? COLOR_BUTTON_SUCCESS_HOVER_BACKGROUND : COLOR_BUTTON_SUCCESS_BACKGROUND));
                 drawalpha(BM_NO, btnx + ((btn_bg_w - btnw) / 2), tbtn_y, btnw, btnh,
                           (mouse_bbtn ? COLOR_BUTTON_DANGER_HOVER_TEXT : COLOR_BUTTON_DANGER_TEXT));
-                btnx += btn_bg_w + UTOX_SCALE(1);
+                btnx += btn_bg_w + utox_scale(1);
 
                 if(file->status <= FILE_TRANSFER_STATUS_PAUSED_BOTH){
                     /* Paused by at least us */
@@ -399,9 +399,9 @@ void messages_draw(MESSAGES *m, int x, int y, int width, int height) {
 
             setfont(FONT_TEXT);
             // textwidth()
-            // drawtextwidth_right(dx + UTOX_SCALE(5 ), y + UTOX_SCALE(10 ), text_size, text_size_len);
-            drawtextrange(dx + UTOX_SCALE(5 ), wbound - UTOX_SCALE(5 ), y + UTOX_SCALE(3 ), text_name_and_size, text_name_and_size_len);
-            //drawtext(os + UTOX_SCALE(3 ), y + UTOX_SCALE(3 ), text_size, text_size_len);
+            // drawtextwidth_right(dx + utox_scale(5 ), y + utox_scale(10 ), text_size, text_size_len);
+            drawtextrange(dx + utox_scale(5 ), wbound - utox_scale(5 ), y + utox_scale(3 ), text_name_and_size, text_name_and_size_len);
+            //drawtext(os + utox_scale(3 ), y + utox_scale(3 ), text_size, text_size_len);
 
             y += FILE_TRANSFER_BOX_HEIGHT;
             break;
@@ -524,11 +524,11 @@ _Bool messages_mmove(MESSAGES *m, int UNUSED(px), int UNUSED(py), int width, int
                 uint8_t over = 0;
                 MSG_FILE *file = (void*)msg;
 
-                mx -= UTOX_SCALE(5);
+                mx -= utox_scale(5);
                 if (mx >= 0 && mx < width &&
                     my >= 0 && my < FILE_TRANSFER_BOX_HEIGHT) {
                     over = 3;
-                    if(mx >= width - TIME_WIDTH - (BM_FTB_WIDTH * 2) - UTOX_SCALE(1) - SCROLL_WIDTH &&
+                    if(mx >= width - TIME_WIDTH - (BM_FTB_WIDTH * 2) - utox_scale(1) - SCROLL_WIDTH &&
                        mx <= width - TIME_WIDTH - SCROLL_WIDTH) {
                         if(mx >= width - TIME_WIDTH - BM_FTB_WIDTH - SCROLL_WIDTH) {
                             // yes this is a cruel joke
@@ -544,29 +544,29 @@ _Bool messages_mmove(MESSAGES *m, int UNUSED(px), int UNUSED(py), int width, int
                 /* WTF IS THIS?! REALLY?! I MEAN SRSLY... WTF! */
                 /* It was hard to write, it should be hard to understand IS A JOKE! */
                 static const uint8_t f[16] = {
-                    0b011,
-                    0b001,
+                    03,
+                    01,
 
-                    0b011,
-                    0b011,
+                    03,
+                    03,
 
-                    0b011,
-                    0b011,
+                    03,
+                    03,
 
-                    0b001,
-                    0b001,
+                    01,
+                    01,
 
-                    0b001,
-                    0b001,
+                    01,
+                    01,
 
-                    0b001,
-                    0b001,
+                    01,
+                    01,
 
-                    0b000,
-                    0b000,
+                    00,
+                    00,
 
-                    0b111,
-                    0b111,
+                    07,
+                    07,
                 };
 
                 if(over && f[file->status * 2 + file->author] & (1 << (over - 1))) {
@@ -967,7 +967,7 @@ int messages_selection(MESSAGES *m, void *buffer, uint32_t len, _Bool names)
     BREAK:
     *p = 0;
 
-    return (void*)p - buffer;
+    return p - (char_t *)buffer;
 }
 
 static int msgheight(MESSAGE *msg, int width)

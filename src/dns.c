@@ -90,21 +90,18 @@ static int64_t parseargument(uint8_t *dest, char_t *src, uint16_t length, void *
             }
             break;
         }
-        switch(*a) {
-        case '0' ... '9':
-        case 'A' ... 'Z':
-        case 'a' ... 'z':
-        case '.': {
-            if(reset) {
+
+        if (((*a >= '0' && *a <= '9')
+            || (*a >= 'A' && *a <= 'Z')
+            || (*a >= 'z' && *a <= 'z')
+            || (*a == '.')) && reset) {
                 d = dest;
                 reset = 0;
                 at = 0;
-            }
-            *d++ = *a;
-            break;
         }
+        *d++ = *a;
 
-        case '@': {
+        if ((*a) == '@') {
             void *dns3;
             if((dns3 = istox3(a + 1, b - (a + 1)))) {
                 uint8_t out[256];
@@ -122,13 +119,10 @@ static int64_t parseargument(uint8_t *dest, char_t *src, uint16_t length, void *
             memcpy(d, "._tox.", 6);
             d += 6;
             at = 1;
-            break;
         }
 
-        default: {
-            reset = 1;
-            break;
-        }
+        else {
+                reset = 1;
         }
         a++;
     }
@@ -279,7 +273,7 @@ static void dns_thread(void *data) {
     _Bool success = 0;
 
     void *dns3 = NULL;
-    int64_t ret = parseargument(result, data + 2, length, &dns3);
+    int64_t ret = parseargument(result, (char_t *) data + 2, length, &dns3);
     if (ret == -1)
         goto FAIL;
 
@@ -464,7 +458,7 @@ void dns_request(char_t *name, uint16_t length) {
 
     void *data = malloc((2u + length < TOX_FRIEND_ADDRESS_SIZE) ? TOX_FRIEND_ADDRESS_SIZE : 2u + length * sizeof(char_t));
     memcpy(data, &length, 2);
-    memcpy(data + 2, name, length * sizeof(char_t));
+    memcpy((char_t *)data + 2, name, length * sizeof(char_t));
 
     thread(dns_thread, data);
 }

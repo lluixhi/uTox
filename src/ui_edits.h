@@ -138,10 +138,10 @@ static void edit_msg_onenter(EDIT *edit)
 
 static uint32_t peers_deduplicate(char_t **dedup, char_t **peernames, uint32_t peers)
 {
-    int peer, i, count;
+    int i, count;
 
     count = 0;
-    for (peer = 0; peer < peers; peer++) {
+    for (uint32_t peer = 0; peer < peers; peer++) {
         char_t *nick;
 
         nick = peernames[peer];

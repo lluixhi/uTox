@@ -126,7 +126,7 @@ void log_read(Tox *tox, int fid) {
     }
 
     LOG_FILE_MSG_HEADER header;
-    off_t rewinds[UTOX_MAX_BACKLOG_MESSAGES] = {};
+    off_t rewinds[UTOX_MAX_BACKLOG_MESSAGES] = {0};
     size_t records_count = 0;
 
     /* TODO: some checks to avoid crashes with corrupted log files
@@ -239,7 +239,7 @@ void friend_meta_data_read(Tox *tox, int friend_id) {
 
     memcpy(metadata, mdata, sizeof(*metadata));
     if (metadata->alias_length) {
-        friend_set_alias(&friend[friend_id], mdata + sizeof(size_t), metadata->alias_length);
+        friend_set_alias(&friend[friend_id], (char_t *)mdata + sizeof(size_t), metadata->alias_length);
     } else {
         friend_set_alias(&friend[friend_id], NULL, 0); /* uTox depends on this being 0/NULL if there's no alias. */
     }
@@ -875,7 +875,7 @@ static void tox_thread_message(Tox *tox, ToxAV *av, uint64_t time, uint8_t msg,
                 STRING* default_add_msg = SPTR(DEFAULT_FRIEND_REQUEST_MESSAGE);
                 fid = tox_friend_add(tox, data, default_add_msg->str, default_add_msg->length, &f_err);
             } else {
-                fid = tox_friend_add(tox, data, data + TOX_FRIEND_ADDRESS_SIZE, param1, &f_err);
+                fid = tox_friend_add(tox, data, (uint8_t *) data + TOX_FRIEND_ADDRESS_SIZE, param1, &f_err);
             }
 
             if(f_err != TOX_ERR_FRIEND_ADD_OK) {
@@ -944,7 +944,7 @@ static void tox_thread_message(Tox *tox, ToxAV *av, uint64_t time, uint8_t msg,
              * param2: message length
              * data: message
              */
-            void *p = data;
+            char_t *p = (char_t *) data;
             TOX_MESSAGE_TYPE type;
             if(msg == TOX_SEND_ACTION){
                 type = TOX_MESSAGE_TYPE_ACTION;
@@ -1441,7 +1441,7 @@ void tox_message(uint8_t tox_message_id, uint16_t param1, uint16_t param2, void 
                 // Device name is a hardcoded string.
                 // data is a pointer to a buffer, that contains device handle pointer,
                 // followed by device name string.
-                list_dropdown_add_hardcoded(&dropdown_video, data + sizeof(void*), *(void**)data);
+                list_dropdown_add_hardcoded(&dropdown_video, (uint8_t *)data + sizeof(void*), *(void**)data);
             } else {
                 // Device name is localized with param1 containing UI_STRING_ID.
                 // data is device handle pointer.
@@ -1540,8 +1540,8 @@ void tox_message(uint8_t tox_message_id, uint16_t param1, uint16_t param2, void 
             uint16_t width, height;
             uint8_t *image;
             memcpy(&width, data, sizeof(uint16_t));
-            memcpy(&height, data + sizeof(uint16_t), sizeof(uint16_t));
-            memcpy(&image, data + sizeof(uint16_t) * 2, sizeof(uint8_t *));
+            memcpy(&height, (uint16_t *)data + sizeof(uint16_t), sizeof(uint16_t));
+            memcpy(&image, (uint16_t *)data + sizeof(uint16_t) * 2, sizeof(uint8_t *));
             free(data);
             friend_recvimage(f, (UTOX_NATIVE_IMAGE*)image, width, height);
             redraw();

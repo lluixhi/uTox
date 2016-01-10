@@ -49,8 +49,7 @@ void file_write_raw(uint8_t *path, uint8_t *data, size_t size)
         return;
     }
 
-    size_t outsize;
-    outsize = fwrite(data, sizeof(uint8_t), size, file);
+    fwrite(data, sizeof(uint8_t), size, file);
     // debug("File write raw size in  %u\n", size);
     // debug("File write raw size out %u\n", outsize);
     fflush(file);
@@ -200,7 +199,7 @@ int sprint_humanread_bytes(uint8_t *dest, unsigned int size, uint64_t bytes) {
         i++;
     }
 
-    int r;
+    unsigned int r;
 
     r = snprintf((char*)dest, size, "%u", (uint32_t)bytes);
 
@@ -616,7 +615,7 @@ typedef struct
     uint8_t filter : 1;
     uint8_t audio_filtering_enabled : 1;
     uint8_t zero : 4;
-    uint8_t proxy_ip[0];
+    uint8_t *proxy_ip;
 }UTOX_SAVE_V2;
 
 UTOX_SAVE* config_load(void)

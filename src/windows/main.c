@@ -1109,7 +1109,7 @@ void loadfonts(){
         .lfFaceName = "DejaVu Sans",
     };
 
-    #define F(x) ((UTOX_SCALE(-x) - 1) / 2)
+    #define F(x) ((utox_scale(-x) - 1) / 2)
     lf.lfHeight = F(12);
     font[FONT_TEXT] = CreateFontIndirect(&lf);
 
@@ -1510,7 +1510,7 @@ LRESULT CALLBACK WindowProc(HWND hwn, UINT msg, WPARAM wParam, LPARAM lParam)
     }
 
     case WM_GETMINMAXINFO: {
-        POINT min = {UTOX_SCALE(320), UTOX_SCALE(160)};
+        POINT min = {utox_scale(320), utox_scale(160)};
         ((MINMAXINFO*)lParam)->ptMinTrackSize = min;
 
         break;

@@ -4,7 +4,7 @@ struct edit_change
 {
     _Bool remove, padding;
     STRING_IDX start, length;
-    char_t data[0];
+    char_t *data;
 };
 
 struct edit {

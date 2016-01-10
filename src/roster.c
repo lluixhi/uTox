@@ -29,7 +29,7 @@ static void drawitembox(ITEM *i, int y) {
     if(selected_item == i) {
         drawrect(ROSTER_BOX_LEFT, y + 1, SIDEBAR_WIDTH, y + ROSTER_BOX_HEIGHT, COLOR_BACKGROUND_MAIN);
 
-        //drawrectw(ROSTER_BOX_LEFT + UTOX_SCALE(5 ) / 2, y + UTOX_SCALE(5 ) / 2, 40, 40, COLOR_BACKGROUND_LIST);
+        //drawrectw(ROSTER_BOX_LEFT + utox_scale(5 ) / 2, y + utox_scale(5 ) / 2, 40, 40, COLOR_BACKGROUND_LIST);
     } else if(mouseover_item == i) {
         drawrect(ROSTER_BOX_LEFT, y + 1, SIDEBAR_WIDTH, y + ROSTER_BOX_HEIGHT, COLOR_BACKGROUND_LIST_HOVER);
     }
@@ -42,7 +42,7 @@ static void drawname(ITEM *i, int y, char_t *name, char_t *msg, STRING_IDX name_
 
     setcolor(color);
     setfont(FONT_LIST_NAME);
-    drawtextwidth(ROSTER_NAME_LEFT, SIDEBAR_WIDTH - ROSTER_NAME_LEFT - UTOX_SCALE(16), y + ROSTER_NAME_TOP, name, name_length);
+    drawtextwidth(ROSTER_NAME_LEFT, SIDEBAR_WIDTH - ROSTER_NAME_LEFT - utox_scale(16), y + ROSTER_NAME_TOP, name, name_length);
 
     if (!color_overide) {
         color = (selected_item == i) ? COLOR_MAIN_SUBTEXT : COLOR_LIST_SUBTEXT;
@@ -50,7 +50,7 @@ static void drawname(ITEM *i, int y, char_t *name, char_t *msg, STRING_IDX name_
 
     setcolor(color);
     setfont(FONT_STATUS);
-    drawtextwidth(ROSTER_NAME_LEFT, SIDEBAR_WIDTH - ROSTER_NAME_LEFT - UTOX_SCALE(16), y + ROSTER_STATUS_MSG_TOP, msg, msg_length);
+    drawtextwidth(ROSTER_NAME_LEFT, SIDEBAR_WIDTH - ROSTER_NAME_LEFT - utox_scale(16), y + ROSTER_STATUS_MSG_TOP, msg, msg_length);
 }
 
 static void drawitem(ITEM *i, int UNUSED(x), int y) {
@@ -73,9 +73,9 @@ static void drawitem(ITEM *i, int UNUSED(x), int y) {
         }
 
         uint8_t status = f->online ? f->status : 3;
-        drawalpha(BM_ONLINE + status, SIDEBAR_WIDTH - UTOX_SCALE(12), y + ROSTER_BOX_HEIGHT / 2 - BM_STATUS_WIDTH / 2, BM_STATUS_WIDTH, BM_STATUS_WIDTH, status_color[status]);
+        drawalpha(BM_ONLINE + status, SIDEBAR_WIDTH - utox_scale(12), y + ROSTER_BOX_HEIGHT / 2 - BM_STATUS_WIDTH / 2, BM_STATUS_WIDTH, BM_STATUS_WIDTH, status_color[status]);
         if(f->notify) {
-            drawalpha(BM_STATUS_NOTIFY, SIDEBAR_WIDTH - UTOX_SCALE(13), y + ROSTER_BOX_HEIGHT / 2 - BM_STATUS_NOTIFY_WIDTH / 2, BM_STATUS_NOTIFY_WIDTH, BM_STATUS_NOTIFY_WIDTH, status_color[status]);
+            drawalpha(BM_STATUS_NOTIFY, SIDEBAR_WIDTH - utox_scale(13), y + ROSTER_BOX_HEIGHT / 2 - BM_STATUS_NOTIFY_WIDTH / 2, BM_STATUS_NOTIFY_WIDTH, BM_STATUS_NOTIFY_WIDTH, status_color[status]);
         }
         // tooltip_new(utf8tonative(snprint_t(f->name, sizeof(char_t)*8));
         break;
@@ -104,9 +104,9 @@ static void drawitem(ITEM *i, int UNUSED(x), int y) {
 
         drawname(i, y, g->name, g->topic, g->name_length, g->topic_length, color_overide, color);
 
-        drawalpha(BM_ONLINE, SIDEBAR_WIDTH - UTOX_SCALE(12), y + ROSTER_BOX_HEIGHT / 2 - BM_STATUS_WIDTH / 2, BM_STATUS_WIDTH, BM_STATUS_WIDTH, status_color[0]);
+        drawalpha(BM_ONLINE, SIDEBAR_WIDTH - utox_scale(12), y + ROSTER_BOX_HEIGHT / 2 - BM_STATUS_WIDTH / 2, BM_STATUS_WIDTH, BM_STATUS_WIDTH, status_color[0]);
         if (g->notify) {
-            drawalpha(BM_STATUS_NOTIFY, SIDEBAR_WIDTH - UTOX_SCALE(13), y + ROSTER_BOX_HEIGHT / 2 - BM_STATUS_NOTIFY_WIDTH / 2, BM_STATUS_NOTIFY_WIDTH, BM_STATUS_NOTIFY_WIDTH, status_color[0]);
+            drawalpha(BM_STATUS_NOTIFY, SIDEBAR_WIDTH - utox_scale(13), y + ROSTER_BOX_HEIGHT / 2 - BM_STATUS_NOTIFY_WIDTH / 2, BM_STATUS_NOTIFY_WIDTH, BM_STATUS_NOTIFY_WIDTH, status_color[0]);
         }
         break;
     }
@@ -124,15 +124,15 @@ static void drawitem(ITEM *i, int UNUSED(x), int y) {
 }
 
 // find index of given item in shown_list, or INT_MAX if it can't be found
-static int find_item_shown_index(ITEM *it) {
-    int i = 0;
+static uint32_t find_item_shown_index(ITEM *it) {
+    uint32_t i = 0;
     while (i < showncount) {
         if (shown_list[i] == it - item) { // (it - item) returns the index of the item in the full items list
             return i;
         }
         i++;
     }
-    return INT_MAX; // can't be found!
+    return UINT32_MAX; // can't be found!
 }
 
 void list_scale(void) {
@@ -215,10 +215,10 @@ void list_search(char_t *str) {
 }
 
 // change the selected item by [offset] items in the shown list
-static void change_tab(int offset) {
+static void change_tab(uint32_t offset) {
     if (selected_item->item == ITEM_FRIEND ||
         selected_item->item == ITEM_GROUP) {
-        int index = find_item_shown_index(selected_item);
+        uint32_t index = find_item_shown_index(selected_item);
         if (index != INT_MAX) {
             // list_selectchat will check if out of bounds
             list_selectchat((index + offset + showncount) % showncount);
@@ -464,7 +464,7 @@ void list_draw(void *UNUSED(n), int UNUSED(x), int y, int UNUSED(width), int UNU
     ITEM *mi = NULL; // item being dragged
     int my; // y of item being dragged
 
-    for (int i = 0; i < showncount; i++) {
+    for (uint32_t i = 0; i < showncount; i++) {
         ITEM *it = &item[shown_list[i]];
         if(it == selected_item && (selected_item_dy >= 5 || selected_item_dy <= -5)) {
             mi = it;
@@ -580,8 +580,8 @@ void list_freeall(void) {
     showncount = 0;
 }
 
-void list_selectchat(int index) {
-    if (index >= 0 && index < showncount) {
+void list_selectchat(uint32_t index) {
+    if (index < showncount) {
         show_page(&item[shown_list[index]]);
     }
 }
@@ -623,12 +623,12 @@ _Bool list_mmove(void *UNUSED(n), int UNUSED(x), int UNUSED(y), int UNUSED(width
             } else {
                 d = (selected_item_dy - ROSTER_BOX_HEIGHT / 2) / ROSTER_BOX_HEIGHT;
             }
-            int index = find_item_shown_index(selected_item);
-            if (index != INT_MAX) { // selected_item was found in shown list
+            uint32_t index = find_item_shown_index(selected_item);
+            if (index != UINT32_MAX) { // selected_item was found in shown list
                 index += d; // get item being dragged over
 
                 // set item being dragged over
-                if(index >= 0 && ((uint32_t) index) < itemcount) {
+                if(index < itemcount) {
                     nitem = &item[shown_list[index]];
                 }
             }

@@ -229,7 +229,8 @@ static void utox_kill_file(FILE_TRANSFER *file, uint8_t us){
 /* Break active file, (when a friend goes offline). */
 static void utox_break_file(FILE_TRANSFER *file){
     if(file->status == FILE_TRANSFER_STATUS_NONE){
-        return utox_kill_file(file, 1); /* We don't save unstarted files */
+        utox_kill_file(file, 1); /* We don't save unstarted files */
+        return;
     } else if(file->status == FILE_TRANSFER_STATUS_COMPLETED || file->status == FILE_TRANSFER_STATUS_KILLED) {
         /* We don't touch these files! */
         return;
@@ -361,8 +362,8 @@ static void decode_inline_png(uint32_t friend_id, uint8_t *data, uint64_t size)
     if (UTOX_NATIVE_IMAGE_IS_VALID(native_image)) {
         void *msg = malloc(sizeof(uint16_t) * 2 + sizeof(uint8_t *));
         memcpy(msg, &width, sizeof(uint16_t));
-        memcpy(msg + sizeof(uint16_t), &height, sizeof(uint16_t));
-        memcpy(msg + sizeof(uint16_t) * 2, &native_image, sizeof(uint8_t *));
+        memcpy((uint16_t *)msg + sizeof(uint16_t), &height, sizeof(uint16_t));
+        memcpy((uint16_t *)msg + sizeof(uint16_t) * 2, &native_image, sizeof(uint8_t *));
         postmessage(FILE_INLINE_IMAGE, friend_id, 0, msg);
     }
 }
@@ -406,7 +407,7 @@ static void utox_complete_file(FILE_TRANSFER *file){
 
 /* Friend has come online, restart our outgoing transfers to this friend. */
 void ft_friend_online(Tox *tox, uint32_t friend_number){
-    for(int i = 0; i < MAX_FILE_TRANSFERS; i++){
+    for(uint32_t i = 0; i < MAX_FILE_TRANSFERS; i++){
         FILE_TRANSFER *file = calloc(1, sizeof(*file));
         file->friend_number = friend_number;
         file->file_number   = i;
@@ -719,13 +720,13 @@ uint32_t outgoing_file_send(Tox *tox, uint32_t friend_number, uint8_t *path, uin
         friend[friend_number].transfer_count++;
     }
     /* Declare vars */
-    uint32_t file_number;
+    uint32_t file_number = 0;
     TOX_ERR_FILE_SEND error;
     uint8_t file_id[TOX_HASH_LENGTH] = {0};
     uint64_t file_size = 0, transfer_size = 0;
     FILE *file = NULL;
     uint8_t memory = 0, avatar = 0;
-    uint8_t *filename;
+    uint8_t *filename = {0};
     size_t path_length = 0, filename_length = 0;
 
     switch (kind){
@@ -1061,7 +1062,7 @@ _Bool utox_file_load_ftinfo(FILE_TRANSFER *file){
     memcpy(info, load, sizeof(*info));
     info->path_length = (size_read - sizeof(*info));
     info->path = malloc(info->path_length + 1);
-    memcpy(info->path, load + (sizeof(*info)), info->path_length);
+    memcpy(info->path, (FILE_TRANSFER *)load + (sizeof(*info)), info->path_length);
     info->path[info->path_length] = 0;
 
     info->friend_number = file->friend_number;

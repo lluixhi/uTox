@@ -409,7 +409,7 @@ _Bool doevent(XEvent event)
                 edit_char(buffer[i], (ev->state & 4) != 0, ev->state);
             }
             uint32_t key = keysym2ucs(sym);
-            if(key != ~0) {
+            if(key != ~0u) {
                 edit_char(key, (ev->state & 4) != 0, ev->state);
             } else {
                 edit_char(sym, 1, ev->state);
@@ -501,9 +501,9 @@ _Bool doevent(XEvent event)
 
         if(ev->target == XA_UTF8_STRING || ev->target == XA_STRING) {
             if(ev->selection == XA_PRIMARY) {
-                XChangeProperty(display, ev->requestor, ev->property, ev->target, 8, PropModeReplace, primary.data, primary.len);
+                XChangeProperty(display, ev->requestor, ev->property, ev->target, 8, PropModeReplace, (char_t *)primary.data, primary.len);
             } else {
-                XChangeProperty(display, ev->requestor, ev->property, ev->target, 8, PropModeReplace, clipboard.data, clipboard.len);
+                XChangeProperty(display, ev->requestor, ev->property, ev->target, 8, PropModeReplace, (char_t *)clipboard.data, clipboard.len);
             }
         } else if(ev->target == targets) {
             Atom supported[] = {XA_STRING, XA_UTF8_STRING};
@@ -539,7 +539,7 @@ _Bool doevent(XEvent event)
                     break;
                 }
 
-                if (pastebuf.left < len) {
+                if ((unsigned long int) pastebuf.left < len) {
                     pastebuf.len += len - pastebuf.left;
                     pastebuf.data = realloc(pastebuf.data, pastebuf.len);
                     pastebuf.left = len;

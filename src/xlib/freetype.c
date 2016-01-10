@@ -74,7 +74,7 @@ GLYPH* font_getglyph(FONT *f, uint32_t ch)
     uint32_t hash = ch % 128;
     GLYPH *g = f->glyphs[hash], *s = g;
     if(g) {
-        while(g->ucs4 != ~0) {
+        while(g->ucs4 != ~0u) {
             if(g->ucs4 == ch) {
                 return g;
             }
@@ -387,7 +387,7 @@ void loadfonts(void) {
         debug("ft_vert\n");
     }
 
-     #define F(x) (UTOX_SCALE(x) / 2.0)
+     #define F(x) (utox_scale(x) / 2.0)
      font_open(&font[FONT_TEXT],       FC_FAMILY, FcTypeString, "Roboto", FC_PIXEL_SIZE, FcTypeDouble, F(12.0),
                 FC_WEIGHT, FcTypeInteger, FC_WEIGHT_NORMAL, FC_SLANT, FcTypeInteger, FC_SLANT_ROMAN, NULL);
 
@@ -433,7 +433,7 @@ void freefonts(void) {
         for(j = 0; j != countof(f->glyphs); j++) {
             GLYPH *g = f->glyphs[j];
             if(g) {
-                while(g->ucs4 != ~0) {
+                while(g->ucs4 != ~0u) {
                     if(g->pic) {
                         XRenderFreePicture(display, g->pic);
                     }

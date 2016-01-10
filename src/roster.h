@@ -50,7 +50,7 @@ void list_addfriendreq(FRIENDREQ *f);
 void list_deletesitem(void);
 void list_deleteright_mouse_item(void);
 
-void list_selectchat(int index);
+void list_selectchat(uint32_t index);
 void list_selectaddfriend(void);
 void list_reselect_current(void);
 void list_selectsettings(void);

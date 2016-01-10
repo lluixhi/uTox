@@ -1,8 +1,8 @@
 ## OPTIONS ##
 # set to anything else to disable them
-DBUS = 1
+DBUS = 0
 V4LCONVERT = 1
-FILTER_AUDIO = 0
+FILTER_AUDIO = 1
 UNITY = 0
 
 DEPS = libtoxav libtoxcore openal vpx libsodium

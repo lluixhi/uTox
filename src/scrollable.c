@@ -4,7 +4,7 @@ void scroll_draw(SCROLLABLE *s, int x, int y, int width, int height)
 {
     uint32_t c = s->content_height;
     uint32_t h = height, m, dy;
-    int scroll_width = 0;
+    uint32_t scroll_width = 0;
     if (s->small) {
         scroll_width = SCROLL_WIDTH / 2;
     } else {

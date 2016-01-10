@@ -358,7 +358,7 @@ void setscale_fonts(void) {
     CFStringRef reg = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%s-Regular"), fontname);
     CFStringRef bold = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, CFSTR("%s-Bold"), fontname);
 
-#define LOCAL_SCALE(x) (UTOX_SCALE(x) / 2.0)
+#define LOCAL_SCALE(x) (utox_scale(x) / 2.0)
     fonts[FONT_TEXT] = CTFontCreateWithNameAndOptions(reg, LOCAL_SCALE(12.0 ), NULL, kCTFontOptionsDefault);
     fonts[FONT_STATUS] = CTFontCreateWithNameAndOptions(reg, LOCAL_SCALE(11.0 ), NULL, kCTFontOptionsDefault);
     fonts[FONT_LIST_NAME] = CTFontCreateWithNameAndOptions(reg, LOCAL_SCALE(12.0 ), NULL, kCTFontOptionsDefault);
